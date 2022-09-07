@@ -12,26 +12,37 @@
 </head>
 
 <body
-  class="select-none bg-cover backdrop-blur-lg bg-[url('https://i.pinimg.com/originals/e2/84/b1/e284b14af595f046c749aea762b546a6.png')]">
+  class="select-none backdrop-grayscale bg-[url('https://cutewallpaper.org/21/pokemon-pattern-background/pokemon-go-Philippines-background-Pokemon-Go-Philippines.jpg')]">
 
-  <div class=" grid place-items-center  h-screen">
-    <div
-      class="bg-white shadow-2xl  border-8 border-gray-900 border-opacity-10 bg-opacity-80 rounded-2xl max-h-xs max-w-xs  ">
-      <div class="flex flex-wrap justify-end mx-8 mt-8" id="typesDiv">
+  <div  class=" duration-700 grid place-items-center   h-screen">
+    <div id="cardPoke" class=" duration-700 border-8 bg-[url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d83htw0-ec490c3b-f7dd-4570-a698-8404a8a12f99.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJmYjI4MjFhLTE0MDYtNGExZC05YjA0LTY2NjhmMjc4ZTk0NFwvZDgzaHR3MC1lYzQ5MGMzYi1mN2RkLTQ1NzAtYTY5OC04NDA0YThhMTJmOTkucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.zFeU6uxxutMPR_qMMoP5MOM8N4EqbYuZWc_naTh8Rpw)] bg-cover bg-no-repeat bg-center   shadow-2xl   rounded-2xl max-h-xs max-w-xs  ">
+      <div class=" duration-700 flex flex-wrap justify-end mx-4 mt-3" id="typesDiv">
 
       </div>
-      <img id="pokeimage" class="mx-auto  w-[90%]" src="">
+      <img id="pokeimage" class="duration-700 mx-auto hover:scale-150 hover:  rounded-2xl hover:w-[90%] sm:w-[70%] w-[60%]" src="">
 
-      <h1 id="pokename" class=" text-center mx-auto text-5xl text-gray-700  font-medium mb-2  mt-4"></h1>
-      <p id="poketext" class="text-center  italic text-xl mx-8 pb-8 font-thin"></p>
+      <h1 id="pokename" class="duration-700 text-center mx-auto text-5xl text-gray-100  font-medium mb-4  mt-4"></h1>
+      <p id="poketext" class=" duration-700 text-center  text-gray-200  italic text-xl mx-8 pb-8 font-light"></p>
 
     </div>
+    <button id="buttonBack" onclick="backSearch()" class=" duration-500 hover:scale-105 p-4 px-8 font-semibold text-white text-xl italic rounded-2xl bg-opacity-70 bg-red-500 hover:bg-opacity-100"><i class="fa-solid fa-caret-left text-xl mr-2"></i>BACK</button>
 
+    <div id="cardSearch"class="flex flex-wrap justify-center bg-white shadow-2xl p-8  border-8 border-gray-900 border-opacity-20  rounded-2xl max-h-xs max-w-xs  ">
+      <img class="mx-auto w-32 mb-8" src="https://icon-library.com/images/pokedex-icon/pokedex-icon-5.jpg">
+   
+      <input id="searchInput" class="flex text-center rounded-2xl p-2 text-gray-800 font-semibold bg-gray-200" type="text"
+        placeholder="Pokemon Name or ID">
+
+      <button onclick="searchPoke()"class="flex duration-700 flex mx-auto px-4  p-2 mt-2 rounded-2xl text-gray-100 text-lg font-semibold bg-red-500 ">Search</button>
+
+
+
+    </div>
   </div>
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
-      const pokeimage = document.getElementById("pokeimage")
+    const pokeimage = document.getElementById("pokeimage")
     const pokename = document.getElementById("pokename")
 
     function firstUpperCase(string) {
@@ -40,12 +51,31 @@
 
 
     let params = new URLSearchParams(window.location.search)
-    let param = params.toString().replace("poke=", "").toLowerCase()
+    let param = params.toString().replace("=", "").toLowerCase()
     window.addEventListener('load', function () {
 
       pokeApiUse()
+      checkSearch()
     })
+    function searchPoke(){
+    const searchInput = document.getElementById("searchInput")
+    window.location.href = `?${searchInput.value}`
+    }
+    function checkSearch(){
+if(param == "" || undefined){
+  document.getElementById("buttonBack").style.display = "none"
+  document.getElementById("cardPoke").style.display = "none"
+  document.getElementById("cardSearch").style.display = "block"
+}else{
+  document.getElementById("cardPoke").style.display = "block"
+  document.getElementById("cardSearch").style.display = "none"
+}
+    }
 
+    function backSearch(){
+      console.log(param)
+      window.location.href =  window.location.href.split("?")[0];
+    }
 
     function pokeApiUse() {
       axios.get(`https://pokeapi.co/api/v2/pokemon/${param}`).then(response => {
@@ -70,8 +100,8 @@
           pokeimage.style.width = "80%"
           pokename.style.margin = "25px"
           document.title = `My Pokedex - Not Found`
-pokename.innerHTML = `Sorry! this pokemon, was not found`
-pokename.style.fontSize = "25px"
+          pokename.innerHTML = `Sorry! this pokemon, was not found`
+          pokename.style.fontSize = "25px"
 
         }
 
