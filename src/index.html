@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Pokedex</title>
+  <link href="./assets/fontawesome/css/all.css" rel="stylesheet">
+  <link href="output.css" rel="stylesheet">
+</head>
+
+<body
+  class="select-none bg-cover backdrop-blur-lg bg-[url('https://i.pinimg.com/originals/e2/84/b1/e284b14af595f046c749aea762b546a6.png')]">
+
+  <div class=" grid place-items-center  h-screen">
+    <div class="bg-white bg-opacity-80 rounded-2xl h-[90%] w-[24rem] sm:w-[30rem]">
+      <div class="flex flex-wrap justify-end mx-8 mt-8" id="typesDiv">
+
+      </div>
+      <img id="pokeimage" class="mx-auto mt-16 w-[10rem]" src="">
+
+      <h1 id="pokename" class=" text-center mx-auto text-5xl text-gray-700  font-medium mb-2  mt-4">NULL</h1>
+      <p id="poketext" class="text-center mx-16 italic text-xl font-thin"></p>
+
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    function firstUpperCase(string){
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    }
+    let params = new URLSearchParams(window.location.search)
+    let param = params.toString().replace("poke=", "")
+    window.addEventListener('load', function () {
+      showPokemon()
+      pokeApiUse()
+    })
+
+
+    function pokeApiUse() {
+      axios.get(`https://pokeapi.co/api/v2/pokemon/${param}`).then(response => {
+     let api = response.data
+     console.log(response.data.id)
+     axios.get(`https://pokeapi.co/api/v2/pokemon-species/${response.data.id}`).then(responseFinal => {
+     console.log(responseFinal.data.flavor_text_entries.find(e => e.language.name == 'en').flavor_text)
+     showFlavorText(responseFinal.data.flavor_text_entries.find(e => e.language.name == 'en').flavor_text)
+    });
+     api.types.forEach(element => {
+     showTypes(element.type.name)
+    });
+    
+
+      }).catch(error => {
+        console.log(error)
+
+      })
+
+    }
+
+
+    const typeDiv = document.getElementById("typesDiv")
+
+    function showFlavorText(input){
+      const poketext = document.getElementById("poketext")
+      poketext.innerHTML = input.replace(/[^a-zA-Z ]/g," ").replace("POK MON", "pokemon")
+
+    }
+    
+    function showTypes(type){
+     let typeimg = document.createElement("img")
+     typeimg.style.width = "50px"
+     typeimg.src = `https://play.pokemonshowdown.com/sprites/types/${firstUpperCase(type)}.png`
+     typeDiv.appendChild(typeimg)
+
+     
+    }
+    function showPokemon() {
+      const pokeimage = document.getElementById("pokeimage")
+      const pokename = document.getElementById("pokename")
+      pokeimage.src = `https://play.pokemonshowdown.com/sprites/ani/${param}.gif`
+      pokename.innerHTML = `${param.charAt(0).toUpperCase() + param.slice(1)}`
+    }
+  </script>
+</body>
+
+</html>
