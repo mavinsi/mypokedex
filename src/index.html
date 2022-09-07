@@ -8,20 +8,22 @@
   <title>My Pokedex</title>
   <link href="./assets/fontawesome/css/all.css" rel="stylesheet">
   <link href="output.css" rel="stylesheet">
+  <link href="./imgs/icon.png" rel="shortcut icon">
 </head>
 
 <body
   class="select-none bg-cover backdrop-blur-lg bg-[url('https://i.pinimg.com/originals/e2/84/b1/e284b14af595f046c749aea762b546a6.png')]">
 
   <div class=" grid place-items-center  h-screen">
-    <div class="bg-white bg-opacity-80 rounded-2xl h-[90%] w-[24rem] sm:w-[30rem]">
+    <div
+      class="bg-white shadow-2xl  border-8 border-gray-900 border-opacity-10 bg-opacity-80 rounded-2xl max-h-xs max-w-xs  ">
       <div class="flex flex-wrap justify-end mx-8 mt-8" id="typesDiv">
 
       </div>
-      <img id="pokeimage" class="mx-auto mt-16 w-[10rem]" src="">
+      <img id="pokeimage" class="mx-auto  w-[90%]" src="">
 
-      <h1 id="pokename" class=" text-center mx-auto text-5xl text-gray-700  font-medium mb-2  mt-4">NULL</h1>
-      <p id="poketext" class="text-center mx-16 italic text-xl font-thin"></p>
+      <h1 id="pokename" class=" text-center mx-auto text-5xl text-gray-700  font-medium mb-2  mt-4"></h1>
+      <p id="poketext" class="text-center  italic text-xl mx-8 pb-8 font-thin"></p>
 
     </div>
 
@@ -29,32 +31,49 @@
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
-    function firstUpperCase(string){
+      const pokeimage = document.getElementById("pokeimage")
+    const pokename = document.getElementById("pokename")
+
+    function firstUpperCase(string) {
       return string.charAt(0).toUpperCase() + string.slice(1)
     }
+
+
     let params = new URLSearchParams(window.location.search)
-    let param = params.toString().replace("poke=", "")
+    let param = params.toString().replace("poke=", "").toLowerCase()
     window.addEventListener('load', function () {
-      showPokemon()
+
       pokeApiUse()
     })
 
 
     function pokeApiUse() {
       axios.get(`https://pokeapi.co/api/v2/pokemon/${param}`).then(response => {
-     let api = response.data
-     console.log(response.data.id)
-     axios.get(`https://pokeapi.co/api/v2/pokemon-species/${response.data.id}`).then(responseFinal => {
-     console.log(responseFinal.data.flavor_text_entries.find(e => e.language.name == 'en').flavor_text)
-     showFlavorText(responseFinal.data.flavor_text_entries.find(e => e.language.name == 'en').flavor_text)
-    });
-     api.types.forEach(element => {
-     showTypes(element.type.name)
-    });
-    
+        let api = response.data
+
+        axios.get(`https://pokeapi.co/api/v2/pokemon-species/${api.id}`).then(responseFinal => {
+          showFlavorText(responseFinal.data.flavor_text_entries.find(e => e.language.name == 'en').flavor_text)
+        })
+
+        showPokemon(api)
+        console.table(api)
+
+
+        api.types.forEach(element => {
+          showTypes(element.type.name)
+        });
+
 
       }).catch(error => {
-        console.log(error)
+        if (error.response.status == 404) {
+          pokeimage.src = "https://c.tenor.com/B-I9jCO00-4AAAAj/pokemon-cubone.gif"
+          pokeimage.style.width = "80%"
+          pokename.style.margin = "25px"
+          document.title = `My Pokedex - Not Found`
+pokename.innerHTML = `Sorry! this pokemon, was not found`
+pokename.style.fontSize = "25px"
+
+        }
 
       })
 
@@ -63,25 +82,25 @@
 
     const typeDiv = document.getElementById("typesDiv")
 
-    function showFlavorText(input){
+    function showFlavorText(input) {
       const poketext = document.getElementById("poketext")
-      poketext.innerHTML = input.replace(/[^a-zA-Z ]/g," ").replace("POK MON", "pokemon")
+      poketext.innerHTML = input.replace(/[^a-zA-Z ]/g, " ").replace("POK MON", "pokemon").replace("Pok mon", "pokemon")
 
     }
-    
-    function showTypes(type){
-     let typeimg = document.createElement("img")
-     typeimg.style.width = "50px"
-     typeimg.src = `https://play.pokemonshowdown.com/sprites/types/${firstUpperCase(type)}.png`
-     typeDiv.appendChild(typeimg)
 
-     
+    function showTypes(type) {
+      let typeimg = document.createElement("img")
+      typeimg.style.width = "50px"
+      typeimg.src = `https://play.pokemonshowdown.com/sprites/types/${firstUpperCase(type)}.png`
+      typeDiv.appendChild(typeimg)
+
+
     }
-    function showPokemon() {
+    function showPokemon(api) {
       const pokeimage = document.getElementById("pokeimage")
-      const pokename = document.getElementById("pokename")
-      pokeimage.src = `https://play.pokemonshowdown.com/sprites/ani/${param}.gif`
-      pokename.innerHTML = `${param.charAt(0).toUpperCase() + param.slice(1)}`
+      document.title = `My Pokedex - ${api.name.charAt(0).toUpperCase() + api.name.slice(1)}`
+      pokeimage.src = `https://play.pokemonshowdown.com/sprites/ani/${api.name}.gif`
+      pokename.innerHTML = `${api.name.charAt(0).toUpperCase() + api.name.slice(1)}`
     }
   </script>
 </body>
