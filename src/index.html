@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  
   <title>My Pokedex</title>
+  <meta property="og:image" itemprop="image" content="./imgs/icon.png">
   <link href="./assets/fontawesome/css/all.css" rel="stylesheet">
   <link href="output.css" rel="stylesheet">
   <link href="./imgs/icon.png" rel="shortcut icon">
@@ -129,7 +130,7 @@ if(param == "" || undefined){
     function showPokemon(api) {
       const pokeimage = document.getElementById("pokeimage")
       document.title = `My Pokedex - ${api.name.charAt(0).toUpperCase() + api.name.slice(1)}`
-      pokeimage.src = `https://play.pokemonshowdown.com/sprites/ani/${api.name}.gif`
+      pokeimage.src = `https://projectpokemon.org/images/normal-sprite/${api.name}.gif`
       pokename.innerHTML = `${api.name.charAt(0).toUpperCase() + api.name.slice(1)}`
     }
   </script>
